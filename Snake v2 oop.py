@@ -8,6 +8,7 @@ import pygame
 import random
 import time
 
+# 123
 
 class Snake:
     """Class for controlling full snake"""
