@@ -21,7 +21,7 @@ class Snake:
         self.direction = "right"
         # self.snake_prev_direction = self.snake_direction
         self.snake = [(self.x, self.y)]
-        self.length = 6
+        self.length = 12
 
         for i in range(1, self.length):
             self.snake.append((self.snake[i - 1][0] - self.SIZE * 1, self.y))
@@ -36,6 +36,8 @@ class Snake:
         self.temp_turnqueue = []
 
         # self.game_start = 0
+        self.apple_eaten = False
+        self.apple_coord = (None, None)
 
     def change_head_coord(self, keys):
         """Snake move"""
@@ -76,6 +78,21 @@ class Snake:
         self.snake[0] = (self.x, self.y)
         self.check_die(score)
 
+
+        if self.apple_eaten == True:
+            # print("XXXXXXXXXXXXXXXXXXXX")
+            # print(self.snake[-1], " ", self.apple_coord)
+            if self.snake[-1] == self.apple_coord:
+                # print("YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY")
+
+                self.apple_eaten = False
+                for i in range(1):
+                    self.snake.append(
+                        (self.snake[self.length - 1][0], self.snake[self.length - 1][1]))
+                    self.length += 1
+                    # self.score.score += 1
+
+
     def draw(self):
 
         # draw head
@@ -97,10 +114,17 @@ class Snake:
         # draw body
         for i in range(1, self.length):
             kt = int(i / self.length * 5) + 3
+            print(kt)
+            if self.apple_eaten == True:
+                if self.apple_coord == self.snake[i]:
+                    kt -= 5
+
             kt2 = kt - 2
-            # print(kt)
+            # color changing frame
             pygame.draw.rect(self.game.surface, pygame.Color(self.color, self.color, self.color),
                              (self.snake[i][0] + kt2, self.snake[i][1] + kt2, self.SIZE - kt2 * 2, self.SIZE - kt2 * 2))
+
+            # 1-color frame
             pygame.draw.rect(self.game.surface,
                              pygame.Color(int((i / self.length) * 255), 255, 255 - int(i / self.length * 255)),
                              (self.snake[i][0] + kt, self.snake[i][1] + kt, self.SIZE - 2 * kt, self.SIZE - 2 * kt))
@@ -211,13 +235,15 @@ class Apple:
         if self.snake.snake[0][0] == self.x and self.snake.snake[0][1] == self.y:
             pygame.mixer.Sound.play(self.sound)
 
-            self.create_new()
 
-            for i in range(10):
-                self.snake.snake.append(
-                    (self.snake.snake[self.snake.length - 1][0], self.snake.snake[self.snake.length - 1][1]))
-                self.snake.length += 1
-                self.score.score += 1
+            self.snake.apple_coord = (self.x, self.y)
+            self.snake.apple_eaten = True
+            self.create_new()
+            # for i in range(10):
+            #     self.snake.snake.append(
+            #         (self.snake.snake[self.snake.length - 1][0], self.snake.snake[self.snake.length - 1][1]))
+            #     self.snake.length += 1
+            #     self.score.score += 1
             # winsound.Beep(500, 10)
 
 
