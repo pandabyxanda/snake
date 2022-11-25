@@ -1,2 +1,2 @@
 # snake
-snake game oop1111
+snake game oop
